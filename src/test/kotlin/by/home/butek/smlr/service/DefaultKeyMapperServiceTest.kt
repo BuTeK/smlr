@@ -1,5 +1,8 @@
 package by.home.butek.smlr.service
 
+import by.home.butek.smlr.model.Link
+import by.home.butek.smlr.model.repositories.LinkRepository
+import by.home.butek.smlr.whenever
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -7,6 +10,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import java.util.*
 
 class DefaultKeyMapperServiceTest {
 
@@ -20,11 +24,17 @@ class DefaultKeyMapperServiceTest {
     @Mock
     lateinit var converter: KeyConverterService
 
+    @Mock
+    lateinit var repo: LinkRepository
+
     private val KEY_A = "abc"
     private val KEY_B = "cde"
 
     private val ID_A = 100000000L
     private val ID_B = 100000001L
+
+    private val LINK_OBJ_A: Link = Link(LINK_A, ID_A)
+    private val LINK_OBJ_B: Link = Link(LINK_B, ID_B)
 
     @Before
     fun init() {
@@ -34,6 +44,12 @@ class DefaultKeyMapperServiceTest {
         Mockito.`when`(converter.idToKey(ID_A)).thenReturn(KEY_A)
         Mockito.`when`(converter.keyToId(KEY_B)).thenReturn(ID_B)
         Mockito.`when`(converter.idToKey(ID_B)).thenReturn(KEY_B)
+
+        whenever(repo.findOne(Mockito.anyObject())).thenReturn(Optional.empty())
+        whenever(repo.save(Link(LINK_A))).thenReturn(LINK_OBJ_A)
+        whenever(repo.save(Link(LINK_B))).thenReturn(LINK_OBJ_B)
+        whenever(repo.findOne(ID_A)).thenReturn(Optional.of(LINK_OBJ_A))
+        whenever(repo.findOne(ID_B)).thenReturn(Optional.of(LINK_OBJ_B))
     }
 
     @Test

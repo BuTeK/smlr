@@ -10,10 +10,12 @@ import org.hamcrest.Matchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.TestPropertySource
 import java.util.*
 
 
 @DatabaseSetup(LinkRepositoryTest.DATASET)
+@TestPropertySource(locations = ["classpath:repositories-test.properties"])
 @DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = LinkRepositoryTest.DATASET)
 open class LinkRepositoryTest : AbstractRepositoryTest() {
 
