@@ -19,8 +19,11 @@ import org.springframework.web.context.WebApplicationContext
 import by.home.butek.smlr.SmlrApplication
 import by.home.butek.smlr.controllers.RedirectController
 import by.home.butek.smlr.service.KeyMapperService
+import org.springframework.test.context.TestPropertySource
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @RunWith(SpringJUnit4ClassRunner::class)
+@TestPropertySource(locations = ["classpath:repositories-test.properties"])
 @ContextConfiguration(classes = [SmlrApplication::class])
 @WebAppConfiguration
 class RedirectControllerTest {
@@ -64,6 +67,12 @@ class RedirectControllerTest {
     fun controllerMustReturn404ifBadKey() {
         mockMvc.perform(get("/$BAD_PATH"))
                 .andExpect(status().`is`(NOT_FOUND))
+    }
+
+    @Test
+    fun homeWorkFile() {
+        mockMvc.perform(get(""))
+                .andExpect(MockMvcResultMatchers.view().name("home"))
     }
 
 }

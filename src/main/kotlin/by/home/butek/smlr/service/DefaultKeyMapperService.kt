@@ -1,25 +1,31 @@
 package by.home.butek.smlr.service
 
+import by.home.butek.smlr.model.Link
+import by.home.butek.smlr.model.repositories.LinkRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.util.concurrent.ConcurrentHashMap
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class DefaultKeyMapperService : KeyMapperService {
 
-    private val map: MutableMap<String, String> = ConcurrentHashMap()
+    @Autowired
+    lateinit var converter: KeyConverterService
 
-    override fun add(key: String, link: String): KeyMapperService.Add {
-        if (map.containsKey(key)) {
-            return KeyMapperService.Add.AlreadyExist(key)
+    @Autowired
+    lateinit var repo: LinkRepository
+
+    @Transactional
+    override fun add(link: String) =
+            converter.idToKey(repo.save(Link(link)).id)
+
+    override fun getLink(key: String): KeyMapperService.Get {
+        val result = repo.findOne(converter.keyToId(key))
+        return if (result.isPresent) {
+            KeyMapperService.Get.Link(result.get().text)
         } else {
-            map[key] = link
-            return KeyMapperService.Add.Success(key, link)
+            KeyMapperService.Get.NotFound(key)
         }
-    }
 
-    override fun getLink(key: String) = if (map.containsKey(key)) {
-        KeyMapperService.Get.Link(map[key]!!)
-    } else {
-        KeyMapperService.Get.NotFound(key)
     }
 }
