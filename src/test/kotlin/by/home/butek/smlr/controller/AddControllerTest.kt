@@ -5,6 +5,7 @@ import by.home.butek.smlr.controllers.AddController
 import by.home.butek.smlr.service.KeyMapperService
 import by.home.butek.smlr.whenever
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.Before
 import org.junit.Test
@@ -19,6 +20,7 @@ import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -62,6 +64,16 @@ class AddControllerTest {
                 .content(jacksonObjectMapper().writeValueAsString(AddController.AddRequest(LINK))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.key", equalTo(KEY)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.link", equalTo(LINK)))
+    }
+
+    @Test
+    fun whenUserLinkAddLinkByFormHeTakesAWebPage() {
+        mockMvc.perform(MockMvcRequestBuilders.post("/addhtml")
+                .param("link", LINK)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString(KEY)))
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString(LINK)))
     }
 
 }

@@ -8,13 +8,15 @@ import by.home.butek.smlr.service.KeyMapperService
 import javax.servlet.http.HttpServletResponse
 
 @Controller
-@RequestMapping("/{key}")
 class RedirectController {
 
     @Autowired
     lateinit var service: KeyMapperService
 
-    @RequestMapping()
+    @RequestMapping("/")
+    fun home() = "home"
+
+    @RequestMapping("/{key}")
     fun redirect(@PathVariable("key") key : String, response: HttpServletResponse) {
 
         val result =  service.getLink(key)
@@ -28,7 +30,6 @@ class RedirectController {
                 response.status = 404
             }
         }
-
     }
 
     companion object {
