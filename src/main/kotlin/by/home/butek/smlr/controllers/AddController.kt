@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 @Controller
 class AddController {
 
-    @Value("{smlr.prefix}")
+    @Value("\${smlr.prefix}")
     private lateinit var prefix: String
 
     @Autowired
