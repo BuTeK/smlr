@@ -1,12 +1,12 @@
 package by.home.butek.smlr.service
 
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import java.util.*
 
 class DefaultKeyConverterServiceTest {
 
-    val service = DefaultKeyConverterService()
+    private val service = DefaultKeyConverterService()
 
     @Test
     fun givenIdMustBeConvertableBothWays() {
@@ -15,7 +15,7 @@ class DefaultKeyConverterServiceTest {
             val initialId = Math.abs(rand.nextLong())
             val key = service.idToKey(initialId)
             val id = service.keyToId(key)
-            Assert.assertEquals(initialId, id)
+            Assertions.assertEquals(initialId, id)
         }
     }
 }

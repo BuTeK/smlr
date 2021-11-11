@@ -1,6 +1,6 @@
 package by.home.butek.smlr.model.repository
 
-import by.home.butek.smlr.model.AbstractRepositoryTest
+import by.home.butek.smlr.AbstractIntegrationTest
 import by.home.butek.smlr.model.Link
 import by.home.butek.smlr.model.repositories.LinkRepository
 import com.github.springtestdbunit.annotation.DatabaseOperation
@@ -8,23 +8,21 @@ import com.github.springtestdbunit.annotation.DatabaseSetup
 import com.github.springtestdbunit.annotation.DatabaseTearDown
 import org.hamcrest.Matchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.TestPropertySource
 import java.util.*
 
 
 @DatabaseSetup(LinkRepositoryTest.DATASET)
-@TestPropertySource(locations = ["classpath:repositories-test.properties"])
-@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = LinkRepositoryTest.DATASET)
-open class LinkRepositoryTest : AbstractRepositoryTest() {
+@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = [LinkRepositoryTest.DATASET])
+class LinkRepositoryTest : AbstractIntegrationTest() {
 
     @Autowired
     lateinit var repository: LinkRepository
 
     @Test
     fun findExisting() {
-        val got: Optional<Link> = repository.findOne(LINK_1_ID)
+        val got: Optional<Link> = repository.findById(LINK_1_ID)
         assertThat(got.isPresent, equalTo(true))
         val link = got.get()
         assertThat(link, equalTo(Link(LINK_1_TEXT, LINK_1_ID)))
@@ -32,13 +30,13 @@ open class LinkRepositoryTest : AbstractRepositoryTest() {
 
     @Test
     fun findOneNotExisting() {
-        val got: Optional<Link> = repository.findOne(LINK_NOT_FOUND)
+        val got: Optional<Link> = repository.findById(LINK_NOT_FOUND)
         assertThat(got.isPresent, equalTo(false))
     }
 
     @Test
     fun saveNew() {
-        val toBeSaved: Link = Link(LINK_TBS_TEXT)
+        val toBeSaved = Link(LINK_TBS_TEXT)
         val got: Link = repository.save(toBeSaved)
         val list: List<Link> = repository.findAll()
         assertThat(list, hasSize(4))

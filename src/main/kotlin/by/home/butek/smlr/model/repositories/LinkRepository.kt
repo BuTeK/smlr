@@ -1,11 +1,8 @@
 package by.home.butek.smlr.model.repositories
 
 import by.home.butek.smlr.model.Link
-import org.springframework.data.repository.Repository
-import java.util.*
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
-interface LinkRepository : Repository<Link, Long> {
-    fun findOne(id: Long?): Optional<Link>
-    fun save(link: Link): Link
-    fun findAll(): List<Link>
-}
+@Repository
+interface LinkRepository : JpaRepository<Link, Long>

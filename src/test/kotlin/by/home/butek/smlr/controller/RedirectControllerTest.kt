@@ -1,32 +1,23 @@
 package by.home.butek.smlr.controller
 
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import by.home.butek.smlr.AbstractIntegrationTest
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
-import by.home.butek.smlr.SmlrApplication
 import by.home.butek.smlr.controllers.RedirectController
 import by.home.butek.smlr.service.KeyMapperService
-import org.springframework.test.context.TestPropertySource
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import by.home.butek.smlr.whenever
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@RunWith(SpringJUnit4ClassRunner::class)
-@TestPropertySource(locations = ["classpath:repositories-test.properties"])
-@ContextConfiguration(classes = [SmlrApplication::class])
-@WebAppConfiguration
-class RedirectControllerTest {
+class RedirectControllerTest: AbstractIntegrationTest() {
 
     @Autowired
     lateinit var webApplicationContext: WebApplicationContext
@@ -40,12 +31,12 @@ class RedirectControllerTest {
     @InjectMocks
     lateinit var controller: RedirectController
 
-    @Before
+    @BeforeEach
     fun init() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build()
-        Mockito.`when`(service.getLink(PATH)).thenReturn(KeyMapperService.Get.Link(HEADER_VALUE))
-        Mockito.`when`(service.getLink(BAD_PATH)).thenReturn(KeyMapperService.Get.NotFound(BAD_PATH))
+        whenever(service.getLink(PATH)).thenReturn(KeyMapperService.Get.Link(HEADER_VALUE))
+        whenever(service.getLink(BAD_PATH)).thenReturn(KeyMapperService.Get.NotFound(BAD_PATH))
     }
 
     private val PATH = "aAbBcCdD"
@@ -71,8 +62,8 @@ class RedirectControllerTest {
 
     @Test
     fun homeWorkFile() {
-        mockMvc.perform(get(""))
-                .andExpect(MockMvcResultMatchers.view().name("home"))
+        mockMvc.perform(get("/"))
+                .andExpect(view().name("home"))
     }
 
 }

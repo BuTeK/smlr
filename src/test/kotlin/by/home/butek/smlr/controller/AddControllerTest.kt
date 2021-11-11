@@ -1,36 +1,25 @@
 package by.home.butek.smlr.controller
 
-import by.home.butek.smlr.SmlrApplication
+import by.home.butek.smlr.AbstractIntegrationTest
 import by.home.butek.smlr.controllers.AddController
 import by.home.butek.smlr.service.KeyMapperService
 import by.home.butek.smlr.whenever
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.TestPropertySource
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
-@RunWith(SpringJUnit4ClassRunner::class)
-@TestPropertySource(locations = ["classpath:repositories-test.properties"])
-@ContextConfiguration(classes = [SmlrApplication::class])
-@WebAppConfiguration
-class AddControllerTest {
+class AddControllerTest: AbstractIntegrationTest() {
 
     @Autowired
     lateinit var webApplicationContext: WebApplicationContext
@@ -47,9 +36,9 @@ class AddControllerTest {
     private val LINK = "link"
     private val KEY = "key"
 
-    @Before
+    @BeforeEach
     fun init() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .build()
@@ -68,12 +57,13 @@ class AddControllerTest {
 
     @Test
     fun whenUserLinkAddLinkByFormHeTakesAWebPage() {
-        mockMvc.perform(MockMvcRequestBuilders.post("/addhtml")
+        mockMvc.perform(
+            post("/addhtml")
                 .param("link", LINK)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(MockMvcResultMatchers.status().isOk)
-                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString(KEY)))
-                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString(LINK)))
+                .andExpect(MockMvcResultMatchers.content().string(containsString(KEY)))
+                .andExpect(MockMvcResultMatchers.content().string(containsString(LINK)))
     }
 
 }
